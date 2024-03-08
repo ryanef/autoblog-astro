@@ -33,12 +33,12 @@ jobs:
     
       - name: deploy to s3
         run: |
-          export S3_BUCKET=$(aws ssm get-parameter --name "/autoblog/S3_BUCKET" --query "Parameter.Value")
-          echo $S3_BUCKET }}     
+          export S3_BUCKET=$(aws ssm get-parameter --name "/autoblog/S3_BUCKET" --with-decryption --query "Parameter.Value")
+          echo $S3_BUCKET    
           aws s3 cp --recursive ./dist/ s3://"$S3_BUCKET"/
      
       - name: invalidate cloudfront cache
         run: |
-          export CLOUDFRONT_ID=$(aws ssm get-parameter --name "/autoblog/CLOUDFRONT_ID" --query "Parameter.Value")   
+          export CLOUDFRONT_ID=$(aws ssm get-parameter --name "/autoblog/CLOUDFRONT_ID" --with-decryption --query "Parameter.Value")   
           echo $CLOUDFRONT_ID
           aws cloudfront create-invalidation --distribution-id $CLOUDFRONT_ID  --paths "/*" "/"
