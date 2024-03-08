@@ -15,15 +15,7 @@ jobs:
       contents: read
 
     steps:
-      - name: Fetch AWS secrets
-        run: |
-          export IAM_ROLE=$(aws ssm get-parameter --name "/autoblog/IAM_ROLE" --query "Parameter.Value" --region "us-east-1")
-          echo $IAM_ROLE
-          echo ${{ env.IAM_ROLE }}
-          # export S3_BUCKET=$(aws ssm get-parameter --name "/autoblog/S3_BUCKET" --query "Parameter.Value")
-          # export CLOUDFRONT_ID=$(aws ssm get-parameter --name "/autoblog/CLOUDFRONT_ID" --query "Parameter.Value")
-          # export AWS_REGION=$(aws ssm get-parameter --name "/autoblog/AWS_REGION" --query "Parameter.Value")
-        
+
       - name: Checkout
         uses: actions/checkout@v3
         
@@ -35,10 +27,17 @@ jobs:
       - name: configure AWS credentials
         uses: aws-actions/configure-aws-credentials@v4
         with:
-          role-to-assume: ${{ env.IAM_ROLE }}
+          role-to-assume: ${{ secrets.IAM_ROLE }}
           role-session-name: github-cd
           aws-region: us-east-1
-      
+          
+      - name: Fetch AWS secrets
+        run: |
+          export S3_BUCKET=$(aws ssm get-parameter --name "/autoblog/S3_BUCKET" --query "Parameter.Value")
+          echo $S3_BUCKET
+          export CLOUDFRONT_ID=$(aws ssm get-parameter --name "/autoblog/CLOUDFRONT_ID" --query "Parameter.Value")
+          export AWS_REGION=$(aws ssm get-parameter --name "/autoblog/AWS_REGION" --query "Parameter.Value")
+              
       - name: deploy to s3
         run: aws s3 cp --recursive ./dist/ s3://${{ env.S3_BUCKET }}/
      
