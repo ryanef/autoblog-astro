@@ -17,7 +17,7 @@ jobs:
     steps:
       - name: Fetch AWS secrets
         run: |
-          export IAM_ROLE=$(aws ssm get-parameter --name "/autoblog/IAM_ROLE" --query "Parameter.Value")
+          export IAM_ROLE=$(aws ssm get-parameter --name "/autoblog/IAM_ROLE" --query "Parameter.Value" --region "us-east-1")
           echo $IAM_ROLE
           # export S3_BUCKET=$(aws ssm get-parameter --name "/autoblog/S3_BUCKET" --query "Parameter.Value")
           # export CLOUDFRONT_ID=$(aws ssm get-parameter --name "/autoblog/CLOUDFRONT_ID" --query "Parameter.Value")
