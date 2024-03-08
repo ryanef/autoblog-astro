@@ -17,11 +17,11 @@ jobs:
     steps:
       - name: Fetch AWS secrets
         run: |
-          export IAM_ROLE=$(aws ssm get-parameter --name "/autoblog/IAM_ROLE" --query "Parameter.Value" --output text)
+          export IAM_ROLE=$(aws ssm get-parameter --name "/autoblog/IAM_ROLE" --query "Parameter.Value")
           echo $IAM_ROLE
-          # export S3_BUCKET=$(aws ssm get-parameter --name "/autoblog/S3_BUCKET" --query "Parameter.Value" --output text)
-          # export CLOUDFRONT_ID=$(aws ssm get-parameter --name "/autoblog/CLOUDFRONT_ID" --query "Parameter.Value" --output text)
-          # export AWS_REGION=$(aws ssm get-parameter --name "/autoblog/AWS_REGION" --query "Parameter.Value" --output text)
+          # export S3_BUCKET=$(aws ssm get-parameter --name "/autoblog/S3_BUCKET" --query "Parameter.Value")
+          # export CLOUDFRONT_ID=$(aws ssm get-parameter --name "/autoblog/CLOUDFRONT_ID" --query "Parameter.Value")
+          # export AWS_REGION=$(aws ssm get-parameter --name "/autoblog/AWS_REGION" --query "Parameter.Value")
         
       - name: Checkout
         uses: actions/checkout@v3
