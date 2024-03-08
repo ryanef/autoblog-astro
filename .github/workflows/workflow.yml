@@ -30,16 +30,15 @@ jobs:
           role-to-assume: ${{ secrets.IAM_ROLE }}
           role-session-name: github-cd
           aws-region: us-east-1
-          
-      - name: Fetch AWS secrets
+    
+      - name: deploy to s3
         run: |
           export S3_BUCKET=$(aws ssm get-parameter --name "/autoblog/S3_BUCKET" --query "Parameter.Value")
-          echo $S3_BUCKET
-          export CLOUDFRONT_ID=$(aws ssm get-parameter --name "/autoblog/CLOUDFRONT_ID" --query "Parameter.Value")
-          export AWS_REGION=$(aws ssm get-parameter --name "/autoblog/AWS_REGION" --query "Parameter.Value")
-              
-      - name: deploy to s3
-        run: aws s3 cp --recursive ./dist/ s3://${{ env.S3_BUCKET }}/
+          echo ${{ env.S3_BUCKET }}     
+          aws s3 cp --recursive ./dist/ s3://${{ env.S3_BUCKET }}/
      
       - name: invalidate cloudfront cache
-        run: aws cloudfront create-invalidation --distribution-id ${{ env.CLOUDFRONT_ID }} --paths "/*" "/"
+        run: |
+          export CLOUDFRONT_ID=$(aws ssm get-parameter --name "/autoblog/CLOUDFRONT_ID" --query "Parameter.Value")   
+          echo ${{ env.CLOUDFRONT_ID }}
+          aws cloudfront create-invalidation --distribution-id ${{ env.CLOUDFRONT_ID }} --paths "/*" "/"
